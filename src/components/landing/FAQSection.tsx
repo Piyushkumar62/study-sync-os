@@ -7,8 +7,8 @@ import {
 
 const faqs = [
   {
-    q: "How does StudySync differ from a regular note-taking app?",
-    a: "StudySync isn't a note-taking tool — it's a study operations system. You bring your existing materials, and StudySync organizes them into modules, tracks your study behavior over time, detects gaps, and provides AI-powered recommendations on what to study next.",
+    q: "How does StudySync differ from a regular study planner?",
+    a: "StudySync goes beyond scheduling. It tracks your study behavior over time, detects knowledge gaps across subjects, and delivers AI-powered recommendations on what to focus on next — turning raw effort into measurable progress.",
   },
   {
     q: "Do I need to manually log study sessions?",
@@ -16,15 +16,15 @@ const faqs = [
   },
   {
     q: "Is my data private and secure?",
-    a: "Yes. All data is encrypted at rest and in transit. We never share or sell your academic data. Campus plans include SSO and full admin controls for institutional compliance.",
+    a: "Yes. All data is encrypted at rest and in transit. We never share or sell your academic data. Institutional deployments include SSO and full admin controls for compliance.",
+  },
+  {
+    q: "How does AI gap detection work?",
+    a: "StudySync analyzes your study patterns, session frequency, and topic coverage to identify areas where you're under-prepared. It then surfaces prioritized recommendations so you can focus where it matters most.",
   },
   {
     q: "Can I use StudySync for group study?",
-    a: "The Campus plan includes shared modules, team dashboards, and collaborative features. Free and Pro plans are designed for individual students.",
-  },
-  {
-    q: "What file formats are supported?",
-    a: "StudySync supports PDF, DOCX, PPTX, Markdown, and plain text. We're actively adding support for image-based notes and handwritten uploads.",
+    a: "Yes. Team features include shared modules, group dashboards, and collaborative analytics so study groups can coordinate and track progress together.",
   },
 ];
 
