@@ -1,13 +1,18 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-const tabs = ["Platform", "Modules", "Insights", "Pricing"];
+const tabs = ["Platform", "Modules", "Insights"];
 
 export function Navbar() {
   const [active, setActive] = useState("Platform");
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [dark, setDark] = useState(() => document.documentElement.classList.contains("dark"));
+
+  useEffect(() => {
+    document.documentElement.classList.toggle("dark", dark);
+  }, [dark]);
 
   return (
     <header className="sticky top-0 z-50 border-b border-border/60 bg-card/80 backdrop-blur-xl shadow-nav">
@@ -36,6 +41,13 @@ export function Navbar() {
 
         {/* Right actions – desktop */}
         <div className="hidden md:flex items-center gap-3">
+          <button
+            onClick={() => setDark(!dark)}
+            className="p-2 rounded-full text-muted-foreground hover:text-foreground transition-colors"
+            aria-label="Toggle dark mode"
+          >
+            {dark ? <Sun size={18} /> : <Moon size={18} />}
+          </button>
           <Link to="/app">
             <Button variant="ghost" size="sm" className="text-muted-foreground">
               Sign in
@@ -71,6 +83,13 @@ export function Navbar() {
             </button>
           ))}
           <div className="flex flex-col gap-2 pt-2 border-t border-border">
+            <button
+              onClick={() => setDark(!dark)}
+              className="flex items-center gap-2 py-2 text-sm font-medium text-muted-foreground hover:text-foreground"
+            >
+              {dark ? <Sun size={16} /> : <Moon size={16} />}
+              {dark ? "Light mode" : "Dark mode"}
+            </button>
             <Link to="/app" onClick={() => setMobileOpen(false)}>
               <Button variant="ghost" className="w-full justify-start">Sign in</Button>
             </Link>
