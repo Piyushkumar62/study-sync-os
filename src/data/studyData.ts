@@ -230,38 +230,121 @@ export const topics: Record<string, TopicDetail> = {
     ],
     lastUpdated: "2026-02-13",
   },
+
+  // CN Topics
+  "topic-cn-intro": {
+    id: "topic-cn-intro", subjectId: "sub-cn", moduleId: "mod-sem4",
+    title: "Network Models", description: "OSI and TCP/IP reference models, layer functions, encapsulation, and protocol data units.",
+    status: "Completed", estimatedMinutes: 90, difficulty: "Easy", progress: 100,
+    notes: "OSI has 7 layers; TCP/IP has 4. Focus on which protocols operate at which layer.",
+    resources: [{ label: "OSI vs TCP/IP Comparison", url: "#" }], lastUpdated: "2026-02-12",
+  },
+  "topic-cn-datalink": {
+    id: "topic-cn-datalink", subjectId: "sub-cn", moduleId: "mod-sem4",
+    title: "Data Link Layer", description: "Framing, error detection (CRC, checksum), flow control (stop-and-wait, sliding window), and MAC protocols.",
+    status: "Completed", estimatedMinutes: 150, difficulty: "Medium", progress: 100,
+    notes: "Sliding window: sender window size determines throughput. Go-Back-N vs Selective Repeat tradeoffs.",
+    resources: [{ label: "Sliding Window Simulator", url: "#" }, { label: "CRC Calculator", url: "#" }], lastUpdated: "2026-02-14",
+  },
+  "topic-cn-network": {
+    id: "topic-cn-network", subjectId: "sub-cn", moduleId: "mod-sem4",
+    title: "Network Layer", description: "IP addressing, subnetting, CIDR, routing algorithms (Dijkstra, Bellman-Ford), NAT, and ICMP.",
+    status: "In Progress", estimatedMinutes: 180, difficulty: "Hard", progress: 45,
+    notes: "Practice subnetting quickly — given IP and mask, find network ID, broadcast, and host range.",
+    resources: [{ label: "Subnetting Practice", url: "#" }, { label: "GATE PYQs – Subnetting", url: "#" }], lastUpdated: "2026-02-19",
+  },
+  "topic-cn-transport": {
+    id: "topic-cn-transport", subjectId: "sub-cn", moduleId: "mod-sem4",
+    title: "Transport Layer", description: "TCP vs UDP, 3-way handshake, congestion control (slow start, AIMD), flow control, and port multiplexing.",
+    status: "Not Started", estimatedMinutes: 150, difficulty: "Hard", progress: 0,
+    notes: "", resources: [{ label: "TCP State Diagram", url: "#" }], lastUpdated: "2026-02-10",
+  },
+  "topic-cn-app": {
+    id: "topic-cn-app", subjectId: "sub-cn", moduleId: "mod-sem4",
+    title: "Application Layer", description: "HTTP, DNS, DHCP, FTP, SMTP, and socket programming fundamentals.",
+    status: "Not Started", estimatedMinutes: 120, difficulty: "Easy", progress: 0,
+    notes: "", resources: [{ label: "DNS Resolution Walkthrough", url: "#" }], lastUpdated: "2026-02-10",
+  },
+
+  // DSA Topics
+  "topic-dsa-arrays": {
+    id: "topic-dsa-arrays", subjectId: "sub-dsa", moduleId: "mod-sem4",
+    title: "Arrays & Strings", description: "Array manipulation, two-pointer technique, sliding window, prefix sums, and string matching algorithms.",
+    status: "Completed", estimatedMinutes: 180, difficulty: "Easy", progress: 100,
+    notes: "Two-pointer works on sorted arrays. Sliding window for subarray problems with constraints.",
+    resources: [{ label: "LeetCode Array Patterns", url: "#" }, { label: "KMP Algorithm Explained", url: "#" }], lastUpdated: "2026-02-11",
+  },
+  "topic-dsa-linkedlist": {
+    id: "topic-dsa-linkedlist", subjectId: "sub-dsa", moduleId: "mod-sem4",
+    title: "Linked Lists", description: "Singly, doubly, circular linked lists, fast-slow pointers, reversal, merge, and cycle detection.",
+    status: "Completed", estimatedMinutes: 120, difficulty: "Easy", progress: 100,
+    notes: "Floyd's cycle detection: slow + fast pointers. To find cycle start, reset one pointer to head.",
+    resources: [{ label: "Linked List Visualizer", url: "#" }], lastUpdated: "2026-02-12",
+  },
+  "topic-dsa-trees": {
+    id: "topic-dsa-trees", subjectId: "sub-dsa", moduleId: "mod-sem4",
+    title: "Trees & BST", description: "Binary trees, BST operations, AVL trees, tree traversals (inorder, preorder, postorder, level-order).",
+    status: "Completed", estimatedMinutes: 180, difficulty: "Medium", progress: 100,
+    notes: "Inorder traversal of BST gives sorted order. AVL rotations: LL, RR, LR, RL.",
+    resources: [{ label: "Tree Traversal Animations", url: "#" }, { label: "AVL Tree Simulator", url: "#" }], lastUpdated: "2026-02-14",
+  },
+  "topic-dsa-graphs": {
+    id: "topic-dsa-graphs", subjectId: "sub-dsa", moduleId: "mod-sem4",
+    title: "Graph Algorithms", description: "BFS, DFS, Dijkstra, Bellman-Ford, Floyd-Warshall, Kruskal, Prim, topological sort, and cycle detection.",
+    status: "In Progress", estimatedMinutes: 240, difficulty: "Hard", progress: 35,
+    notes: "Dijkstra fails with negative edges — use Bellman-Ford. Topological sort only for DAGs.",
+    resources: [{ label: "Graph Algorithm Visualizer", url: "#" }, { label: "GATE PYQs – Graphs", url: "#" }], lastUpdated: "2026-02-20",
+  },
+  "topic-dsa-dp": {
+    id: "topic-dsa-dp", subjectId: "sub-dsa", moduleId: "mod-sem4",
+    title: "Dynamic Programming", description: "Memoization, tabulation, 0/1 knapsack, LCS, LIS, matrix chain multiplication, and state optimization.",
+    status: "In Progress", estimatedMinutes: 240, difficulty: "Hard", progress: 25,
+    notes: "Always define state clearly. Top-down (memo) is easier to write; bottom-up (tab) is more efficient.",
+    resources: [{ label: "DP Patterns Guide", url: "#" }, { label: "Aditya Verma DP Playlist", url: "#" }], lastUpdated: "2026-02-21",
+  },
+  "topic-dsa-sorting": {
+    id: "topic-dsa-sorting", subjectId: "sub-dsa", moduleId: "mod-sem4",
+    title: "Sorting & Searching", description: "Merge sort, quick sort, heap sort, counting sort, binary search variations, and order statistics.",
+    status: "Completed", estimatedMinutes: 150, difficulty: "Medium", progress: 100,
+    notes: "Quick sort avg O(n log n), worst O(n²). Merge sort always O(n log n) but needs O(n) space.",
+    resources: [{ label: "Sorting Visualizer", url: "#" }], lastUpdated: "2026-02-13",
+  },
 };
 
 // ─── Subjects ──────────────────────────────────────────────────
 
 export const subjects: Record<string, Subject> = {
   "sub-dbms": {
-    id: "sub-dbms",
-    moduleId: "mod-sem4",
+    id: "sub-dbms", moduleId: "mod-sem4",
     title: "Database Management System",
     description: "Comprehensive study of database design, querying, normalization, transactions, and storage structures.",
-    status: "In Progress",
-    estimatedMinutes: 870,
-    progress: 49,
-    topicIds: [
-      "topic-dbms-er", "topic-dbms-relational", "topic-dbms-normalization",
-      "topic-dbms-sql", "topic-dbms-transactions", "topic-dbms-indexing",
-    ],
+    status: "In Progress", estimatedMinutes: 870, progress: 49,
+    topicIds: ["topic-dbms-er", "topic-dbms-relational", "topic-dbms-normalization", "topic-dbms-sql", "topic-dbms-transactions", "topic-dbms-indexing"],
     lastUpdated: "2026-02-20",
   },
   "sub-os": {
-    id: "sub-os",
-    moduleId: "mod-sem4",
+    id: "sub-os", moduleId: "mod-sem4",
     title: "Operating System",
     description: "Core OS concepts including process management, scheduling, memory, synchronization, and file systems.",
-    status: "In Progress",
-    estimatedMinutes: 750,
-    progress: 88,
-    topicIds: [
-      "topic-os-cpu", "topic-os-deadlock", "topic-os-memory",
-      "topic-os-sync", "topic-os-fs",
-    ],
+    status: "In Progress", estimatedMinutes: 750, progress: 88,
+    topicIds: ["topic-os-cpu", "topic-os-deadlock", "topic-os-memory", "topic-os-sync", "topic-os-fs"],
     lastUpdated: "2026-02-20",
+  },
+  "sub-cn": {
+    id: "sub-cn", moduleId: "mod-sem4",
+    title: "Computer Networks",
+    description: "Network architecture, protocols across OSI/TCP-IP layers, routing, transport mechanisms, and application protocols.",
+    status: "In Progress", estimatedMinutes: 690, progress: 54,
+    topicIds: ["topic-cn-intro", "topic-cn-datalink", "topic-cn-network", "topic-cn-transport", "topic-cn-app"],
+    lastUpdated: "2026-02-19",
+  },
+  "sub-dsa": {
+    id: "sub-dsa", moduleId: "mod-sem4",
+    title: "Data Structures & Algorithms",
+    description: "Fundamental data structures, algorithmic paradigms, sorting, searching, graph algorithms, and dynamic programming.",
+    status: "In Progress", estimatedMinutes: 1110, progress: 78,
+    topicIds: ["topic-dsa-arrays", "topic-dsa-linkedlist", "topic-dsa-trees", "topic-dsa-graphs", "topic-dsa-dp", "topic-dsa-sorting"],
+    lastUpdated: "2026-02-21",
   },
 };
 
@@ -271,12 +354,12 @@ export const modules: Module[] = [
   {
     id: "mod-sem4",
     title: "Semester 4",
-    description: "Core computer science subjects covering databases and operating systems fundamentals.",
+    description: "Core computer science subjects covering databases, operating systems, networks, and algorithms.",
     status: "In Progress",
-    estimatedMinutes: 1620,
-    progress: 66,
-    subjectIds: ["sub-dbms", "sub-os"],
-    lastUpdated: "2026-02-20",
+    estimatedMinutes: 3420,
+    progress: 67,
+    subjectIds: ["sub-dbms", "sub-os", "sub-cn", "sub-dsa"],
+    lastUpdated: "2026-02-21",
   },
 ];
 
