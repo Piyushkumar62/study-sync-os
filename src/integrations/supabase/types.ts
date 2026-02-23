@@ -14,7 +14,74 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      study_topics: {
+        Row: {
+          created_at: string
+          display_order: number
+          id: string
+          module_id: string
+          notes_markdown: string
+          subject_id: string
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          display_order?: number
+          id: string
+          module_id: string
+          notes_markdown?: string
+          subject_id: string
+          title: string
+        }
+        Update: {
+          created_at?: string
+          display_order?: number
+          id?: string
+          module_id?: string
+          notes_markdown?: string
+          subject_id?: string
+          title?: string
+        }
+        Relationships: []
+      }
+      user_topic_progress: {
+        Row: {
+          completed: boolean
+          completed_at: string | null
+          created_at: string
+          id: string
+          topic_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          completed?: boolean
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          topic_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          completed?: boolean
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          topic_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_topic_progress_topic_id_fkey"
+            columns: ["topic_id"]
+            isOneToOne: false
+            referencedRelation: "study_topics"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
