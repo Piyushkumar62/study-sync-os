@@ -24,19 +24,33 @@ export function Navbar() {
 
         {/* Center tabs – desktop */}
         <nav className="hidden md:flex items-center gap-1 rounded-full bg-secondary/80 p-1">
-          {tabs.map((tab) => (
-            <button
-              key={tab}
-              onClick={() => setActive(tab)}
-              className={`rounded-full px-4 py-1.5 text-sm font-medium transition-all ${
-                active === tab
-                  ? "bg-card text-foreground shadow-sm"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              {tab}
-            </button>
-          ))}
+          {tabs.map((tab) =>
+            tab === "Modules" ? (
+              <Link
+                key={tab}
+                to="/app/modules"
+                className={`rounded-full px-4 py-1.5 text-sm font-medium transition-all ${
+                  active === tab
+                    ? "bg-card text-foreground shadow-sm"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                {tab}
+              </Link>
+            ) : (
+              <button
+                key={tab}
+                onClick={() => setActive(tab)}
+                className={`rounded-full px-4 py-1.5 text-sm font-medium transition-all ${
+                  active === tab
+                    ? "bg-card text-foreground shadow-sm"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                {tab}
+              </button>
+            )
+          )}
         </nav>
 
         {/* Right actions – desktop */}
@@ -73,15 +87,26 @@ export function Navbar() {
       {/* Mobile drawer */}
       {mobileOpen && (
         <div className="md:hidden border-t border-border bg-card px-5 py-4 space-y-3">
-          {tabs.map((tab) => (
-            <button
-              key={tab}
-              onClick={() => { setActive(tab); setMobileOpen(false); }}
-              className="block w-full text-left py-2 text-sm font-medium text-muted-foreground hover:text-foreground"
-            >
-              {tab}
-            </button>
-          ))}
+          {tabs.map((tab) =>
+            tab === "Modules" ? (
+              <Link
+                key={tab}
+                to="/app/modules"
+                onClick={() => setMobileOpen(false)}
+                className="block w-full text-left py-2 text-sm font-medium text-muted-foreground hover:text-foreground"
+              >
+                {tab}
+              </Link>
+            ) : (
+              <button
+                key={tab}
+                onClick={() => { setActive(tab); setMobileOpen(false); }}
+                className="block w-full text-left py-2 text-sm font-medium text-muted-foreground hover:text-foreground"
+              >
+                {tab}
+              </button>
+            )
+          )}
           <div className="flex flex-col gap-2 pt-2 border-t border-border">
             <button
               onClick={() => setDark(!dark)}
