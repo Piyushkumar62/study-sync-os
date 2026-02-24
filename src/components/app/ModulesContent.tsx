@@ -1,15 +1,16 @@
 import { useState } from "react";
 import {
   BookOpen, Clock, ChevronRight, CheckCircle2, Circle, Loader2,
-  ArrowLeft, FileText, Link as LinkIcon, StickyNote, BarChart3
+  ArrowLeft, FileText, StickyNote, BarChart3, Lock,
+  Link as LinkIcon,
 } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import {
-  modules, subjects, topics,
-  getSubjectsForModule, getTopicsForSubject, getTopicById,
+  subjectList, subjects, topics,
+  getTopicsForSubject, getTopicById, isTopicUnlocked,
   formatMinutes,
-  type Module, type Subject, type TopicDetail, type Status, type Difficulty,
+  type Subject, type TopicDetail, type Status, type Difficulty,
 } from "@/data/studyData";
 
 /* ── Status helpers ─────────────────────────────────────── */
@@ -41,7 +42,7 @@ const diffVariant = (d: Difficulty): "secondary" | "default" | "destructive" => 
 
 /* ── Breadcrumb ─────────────────────────────────────────── */
 
-function Breadcrumb({ items, onNavigate }: { items: { label: string; onClick?: () => void }[]; onNavigate?: () => void }) {
+function Breadcrumb({ items }: { items: { label: string; onClick?: () => void }[] }) {
   return (
     <div className="flex items-center gap-1.5 text-xs text-muted-foreground mb-4 flex-wrap">
       {items.map((item, i) => (
@@ -60,20 +61,20 @@ function Breadcrumb({ items, onNavigate }: { items: { label: string; onClick?: (
   );
 }
 
-/* ── Level 1: Modules List ──────────────────────────────── */
+/* ── Level 1: Subjects List (was Modules) ───────────────── */
 
-function ModulesList({ onSelect }: { onSelect: (id: string) => void }) {
+function SubjectsList({ onSelect }: { onSelect: (id: string) => void }) {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-foreground">Modules</h1>
-        <p className="text-sm text-muted-foreground">Select a module to view its subjects and topics.</p>
+        <h1 className="text-2xl font-bold text-foreground">Subjects</h1>
+        <p className="text-sm text-muted-foreground">Select a subject to view its topics.</p>
       </div>
-      <div className="grid gap-4">
-        {modules.map((mod) => (
+      <div className="grid gap-4 sm:grid-cols-2">
+        {subjectList.map((sub) => (
           <button
-            key={mod.id}
-            onClick={() => onSelect(mod.id)}
+            key={sub.id}
+            onClick={() => onSelect(sub.id)}
             className="w-full text-left rounded-xl border border-border bg-card p-5 shadow-card hover:border-primary/30 hover:shadow-md transition-all group"
           >
             <div className="flex items-start justify-between mb-3">
@@ -82,69 +83,12 @@ function ModulesList({ onSelect }: { onSelect: (id: string) => void }) {
                   <BookOpen size={18} className="text-primary" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors">{mod.title}</h3>
-                  <p className="text-xs text-muted-foreground">{mod.description}</p>
+                  <h3 className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors">{sub.title}</h3>
+                  <p className="text-xs text-muted-foreground line-clamp-1">{sub.description}</p>
                 </div>
               </div>
               <ChevronRight size={16} className="text-muted-foreground group-hover:text-primary transition-colors mt-1" />
             </div>
-            <div className="flex items-center gap-4 text-xs text-muted-foreground mb-3">
-              <span>{mod.subjectIds.length} subjects</span>
-              <span className="flex items-center gap-1"><Clock size={12} /> {formatMinutes(mod.estimatedMinutes)}</span>
-              <span className={statusPill(mod.status)}>{mod.status}</span>
-            </div>
-            <div className="flex items-center gap-3">
-              <Progress value={mod.progress} className="h-1.5 flex-1" />
-              <span className="text-xs font-medium text-foreground">{mod.progress}%</span>
-            </div>
-          </button>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-/* ── Level 2: Subjects List ─────────────────────────────── */
-
-function SubjectsList({ moduleId, onSelect, onBack }: { moduleId: string; onSelect: (id: string) => void; onBack: () => void }) {
-  const mod = modules.find((m) => m.id === moduleId)!;
-  const subs = getSubjectsForModule(moduleId);
-
-  return (
-    <div className="space-y-6">
-      <Breadcrumb
-        items={[
-          { label: "Modules", onClick: onBack },
-          { label: mod.title },
-        ]}
-      />
-      <div className="flex items-center gap-3">
-        <button onClick={onBack} className="p-1.5 rounded-lg hover:bg-secondary text-muted-foreground">
-          <ArrowLeft size={18} />
-        </button>
-        <div>
-          <h1 className="text-2xl font-bold text-foreground">{mod.title}</h1>
-          <p className="text-sm text-muted-foreground">{subs.length} subjects · {formatMinutes(mod.estimatedMinutes)} total</p>
-        </div>
-      </div>
-
-      <div className="grid gap-4 sm:grid-cols-2">
-        {subs.map((sub) => (
-          <button
-            key={sub.id}
-            onClick={() => onSelect(sub.id)}
-            className="w-full text-left rounded-xl border border-border bg-card p-5 shadow-card hover:border-primary/30 hover:shadow-md transition-all group"
-          >
-            <div className="flex items-start justify-between mb-2">
-              <div className="flex items-center gap-2.5">
-                <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center">
-                  <FileText size={18} className="text-primary" />
-                </div>
-                <h3 className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors">{sub.title}</h3>
-              </div>
-              <ChevronRight size={16} className="text-muted-foreground group-hover:text-primary transition-colors mt-1" />
-            </div>
-            <p className="text-xs text-muted-foreground mb-3 line-clamp-2">{sub.description}</p>
             <div className="flex items-center gap-4 text-xs text-muted-foreground mb-3">
               <span>{sub.topicIds.length} topics</span>
               <span className="flex items-center gap-1"><Clock size={12} /> {formatMinutes(sub.estimatedMinutes)}</span>
@@ -161,21 +105,19 @@ function SubjectsList({ moduleId, onSelect, onBack }: { moduleId: string; onSele
   );
 }
 
-/* ── Level 3: Topics List ───────────────────────────────── */
+/* ── Level 2: Topics List (with sequential locking) ─────── */
 
-function TopicsList({ subjectId, onSelect, onBack, onBackToModules }: {
-  subjectId: string; onSelect: (id: string) => void; onBack: () => void; onBackToModules: () => void;
+function TopicsList({ subjectId, onSelect, onBack }: {
+  subjectId: string; onSelect: (id: string) => void; onBack: () => void;
 }) {
   const sub = subjects[subjectId]!;
-  const mod = modules.find((m) => m.id === sub.moduleId)!;
   const topicList = getTopicsForSubject(subjectId);
 
   return (
     <div className="space-y-6">
       <Breadcrumb
         items={[
-          { label: "Modules", onClick: onBackToModules },
-          { label: mod.title, onClick: onBack },
+          { label: "Subjects", onClick: onBack },
           { label: sub.title },
         ]}
       />
@@ -190,36 +132,52 @@ function TopicsList({ subjectId, onSelect, onBack, onBackToModules }: {
       </div>
 
       <div className="rounded-xl border border-border bg-card shadow-card overflow-hidden">
-        {topicList.map((topic, i) => (
-          <button
-            key={topic.id}
-            onClick={() => onSelect(topic.id)}
-            className={`w-full text-left flex items-center gap-4 px-5 py-4 hover:bg-secondary/20 transition-colors group ${
-              i < topicList.length - 1 ? "border-b border-border" : ""
-            }`}
-          >
-            <div className="mt-0.5">{statusIcon(topic.status)}</div>
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 flex-wrap">
-                <span className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">{topic.title}</span>
-                <Badge variant={diffVariant(topic.difficulty)} className="text-[10px] px-2 py-0">
-                  {topic.difficulty}
-                </Badge>
+        {topicList.map((topic, i) => {
+          const unlocked = isTopicUnlocked(subjectId, topic.id);
+          return (
+            <button
+              key={topic.id}
+              onClick={() => unlocked && onSelect(topic.id)}
+              disabled={!unlocked}
+              className={`w-full text-left flex items-center gap-4 px-5 py-4 transition-colors group ${
+                i < topicList.length - 1 ? "border-b border-border" : ""
+              } ${unlocked ? "hover:bg-secondary/20" : "opacity-50 cursor-not-allowed"}`}
+            >
+              <div className="flex items-center justify-center w-6 h-6 rounded-full bg-muted text-xs font-bold text-muted-foreground shrink-0">
+                {i + 1}
               </div>
-              <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1">{topic.description}</p>
-            </div>
-            <div className="flex items-center gap-4 shrink-0">
-              <span className="text-xs text-muted-foreground flex items-center gap-1">
-                <Clock size={12} /> {formatMinutes(topic.estimatedMinutes)}
-              </span>
-              <div className="flex items-center gap-2 w-20">
-                <Progress value={topic.progress} className="h-1 flex-1" />
-                <span className="text-[10px] text-muted-foreground w-7 text-right">{topic.progress}%</span>
+              <div className="mt-0.5 shrink-0">
+                {unlocked ? statusIcon(topic.status) : <Lock size={16} className="text-muted-foreground" />}
               </div>
-              <ChevronRight size={14} className="text-muted-foreground group-hover:text-primary transition-colors" />
-            </div>
-          </button>
-        ))}
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className={`text-sm font-medium transition-colors ${unlocked ? "text-foreground group-hover:text-primary" : "text-muted-foreground"}`}>
+                    {topic.title}
+                  </span>
+                  <Badge variant={diffVariant(topic.difficulty)} className="text-[10px] px-2 py-0">
+                    {topic.difficulty}
+                  </Badge>
+                  {!unlocked && (
+                    <span className="text-[10px] text-muted-foreground italic">Complete previous topic to unlock</span>
+                  )}
+                </div>
+                <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1">{topic.description}</p>
+              </div>
+              <div className="flex items-center gap-4 shrink-0">
+                <span className="text-xs text-muted-foreground flex items-center gap-1">
+                  <Clock size={12} /> {formatMinutes(topic.estimatedMinutes)}
+                </span>
+                {unlocked && (
+                  <div className="flex items-center gap-2 w-20">
+                    <Progress value={topic.progress} className="h-1 flex-1" />
+                    <span className="text-[10px] text-muted-foreground w-7 text-right">{topic.progress}%</span>
+                  </div>
+                )}
+                <ChevronRight size={14} className={unlocked ? "text-muted-foreground group-hover:text-primary transition-colors" : "text-muted-foreground/40"} />
+              </div>
+            </button>
+          );
+        })}
       </div>
     </div>
   );
@@ -227,19 +185,17 @@ function TopicsList({ subjectId, onSelect, onBack, onBackToModules }: {
 
 /* ── Topic Detail View ──────────────────────────────────── */
 
-function TopicDetailView({ topicId, onBack, onBackToSubjects, onBackToModules }: {
-  topicId: string; onBack: () => void; onBackToSubjects: () => void; onBackToModules: () => void;
+function TopicDetailView({ topicId, onBack, onBackToSubjects }: {
+  topicId: string; onBack: () => void; onBackToSubjects: () => void;
 }) {
   const topic = getTopicById(topicId)!;
   const sub = subjects[topic.subjectId]!;
-  const mod = modules.find((m) => m.id === topic.moduleId)!;
 
   return (
     <div className="space-y-6">
       <Breadcrumb
         items={[
-          { label: "Modules", onClick: onBackToModules },
-          { label: mod.title, onClick: onBackToSubjects },
+          { label: "Subjects", onClick: onBackToSubjects },
           { label: sub.title, onClick: onBack },
           { label: topic.title },
         ]}
@@ -254,7 +210,7 @@ function TopicDetailView({ topicId, onBack, onBackToSubjects, onBackToModules }:
             <Badge variant={diffVariant(topic.difficulty)}>{topic.difficulty}</Badge>
             <span className={statusPill(topic.status)}>{topic.status}</span>
           </div>
-          <p className="text-sm text-muted-foreground mt-1">{sub.title} · {mod.title}</p>
+          <p className="text-sm text-muted-foreground mt-1">{sub.title}</p>
         </div>
       </div>
 
@@ -297,8 +253,9 @@ function TopicDetailView({ topicId, onBack, onBackToSubjects, onBackToModules }:
           <div className="flex items-center gap-2 mb-2">
             <StickyNote size={16} className="text-primary" />
             <h3 className="text-sm font-semibold text-foreground">Notes</h3>
+            <span className="text-[10px] text-muted-foreground ml-auto">(local)</span>
           </div>
-          <p className="text-sm text-muted-foreground leading-relaxed">{topic.notes}</p>
+          <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-wrap">{topic.notes}</p>
         </div>
       )}
 
@@ -311,11 +268,7 @@ function TopicDetailView({ topicId, onBack, onBackToSubjects, onBackToModules }:
           </div>
           <div className="space-y-2">
             {topic.resources.map((res, i) => (
-              <a
-                key={i}
-                href={res.url}
-                className="flex items-center gap-2 text-sm text-primary hover:underline"
-              >
+              <a key={i} href={res.url} className="flex items-center gap-2 text-sm text-primary hover:underline">
                 <ChevronRight size={12} />
                 {res.label}
               </a>
@@ -330,41 +283,30 @@ function TopicDetailView({ topicId, onBack, onBackToSubjects, onBackToModules }:
 /* ── Main Component ─────────────────────────────────────── */
 
 type View =
-  | { level: "modules" }
-  | { level: "subjects"; moduleId: string }
-  | { level: "topics"; moduleId: string; subjectId: string }
-  | { level: "detail"; moduleId: string; subjectId: string; topicId: string };
+  | { level: "subjects" }
+  | { level: "topics"; subjectId: string }
+  | { level: "detail"; subjectId: string; topicId: string };
 
 export function ModulesContent() {
-  const [view, setView] = useState<View>({ level: "modules" });
+  const [view, setView] = useState<View>({ level: "subjects" });
 
   switch (view.level) {
-    case "modules":
-      return <ModulesList onSelect={(id) => setView({ level: "subjects", moduleId: id })} />;
     case "subjects":
-      return (
-        <SubjectsList
-          moduleId={view.moduleId}
-          onSelect={(id) => setView({ level: "topics", moduleId: view.moduleId, subjectId: id })}
-          onBack={() => setView({ level: "modules" })}
-        />
-      );
+      return <SubjectsList onSelect={(id) => setView({ level: "topics", subjectId: id })} />;
     case "topics":
       return (
         <TopicsList
           subjectId={view.subjectId}
-          onSelect={(id) => setView({ level: "detail", moduleId: view.moduleId, subjectId: view.subjectId, topicId: id })}
-          onBack={() => setView({ level: "subjects", moduleId: view.moduleId })}
-          onBackToModules={() => setView({ level: "modules" })}
+          onSelect={(id) => setView({ level: "detail", subjectId: view.subjectId, topicId: id })}
+          onBack={() => setView({ level: "subjects" })}
         />
       );
     case "detail":
       return (
         <TopicDetailView
           topicId={view.topicId}
-          onBack={() => setView({ level: "topics", moduleId: view.moduleId, subjectId: view.subjectId })}
-          onBackToSubjects={() => setView({ level: "subjects", moduleId: view.moduleId })}
-          onBackToModules={() => setView({ level: "modules" })}
+          onBack={() => setView({ level: "topics", subjectId: view.subjectId })}
+          onBackToSubjects={() => setView({ level: "subjects" })}
         />
       );
   }
