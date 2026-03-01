@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Menu, X, Moon, Sun } from "lucide-react";
+import { Menu, X, Moon, Sun, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/hooks/useAuth";
 
 const tabs = ["Platform", "Modules", "Insights"];
 
@@ -9,15 +10,17 @@ export function Navbar() {
   const [active, setActive] = useState("Platform");
   const [mobileOpen, setMobileOpen] = useState(false);
   const [dark, setDark] = useState(() => document.documentElement.classList.contains("dark"));
+  const { user, signOut } = useAuth();
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark", dark);
   }, [dark]);
 
+  const modulesHref = user ? "/app/modules" : "/auth";
+
   return (
     <header className="sticky top-0 z-50 border-b border-border/60 bg-card/80 backdrop-blur-xl shadow-nav">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-5">
-        {/* Logo */}
         <Link to="/" className="text-lg font-bold tracking-tight text-foreground">
           StudySync
         </Link>
@@ -28,7 +31,7 @@ export function Navbar() {
             tab === "Modules" ? (
               <Link
                 key={tab}
-                to="/app/modules"
+                to={modulesHref}
                 className={`rounded-full px-4 py-1.5 text-sm font-medium transition-all ${
                   active === tab
                     ? "bg-card text-foreground shadow-sm"
@@ -62,16 +65,31 @@ export function Navbar() {
           >
             {dark ? <Sun size={18} /> : <Moon size={18} />}
           </button>
-          <Link to="/app">
-            <Button variant="ghost" size="sm" className="text-muted-foreground">
-              Sign in
-            </Button>
-          </Link>
-          <Link to="/app">
-            <Button size="sm" className="rounded-full px-5">
-              Get started
-            </Button>
-          </Link>
+          {user ? (
+            <>
+              <Link to="/app">
+                <Button variant="ghost" size="sm" className="text-muted-foreground">
+                  Dashboard
+                </Button>
+              </Link>
+              <Button variant="ghost" size="sm" onClick={signOut} className="text-muted-foreground">
+                <LogOut size={16} />
+              </Button>
+            </>
+          ) : (
+            <>
+              <Link to="/auth">
+                <Button variant="ghost" size="sm" className="text-muted-foreground">
+                  Sign in
+                </Button>
+              </Link>
+              <Link to="/auth">
+                <Button size="sm" className="rounded-full px-5">
+                  Get started
+                </Button>
+              </Link>
+            </>
+          )}
         </div>
 
         {/* Mobile toggle */}
@@ -91,7 +109,7 @@ export function Navbar() {
             tab === "Modules" ? (
               <Link
                 key={tab}
-                to="/app/modules"
+                to={modulesHref}
                 onClick={() => setMobileOpen(false)}
                 className="block w-full text-left py-2 text-sm font-medium text-muted-foreground hover:text-foreground"
               >
@@ -115,12 +133,25 @@ export function Navbar() {
               {dark ? <Sun size={16} /> : <Moon size={16} />}
               {dark ? "Light mode" : "Dark mode"}
             </button>
-            <Link to="/app" onClick={() => setMobileOpen(false)}>
-              <Button variant="ghost" className="w-full justify-start">Sign in</Button>
-            </Link>
-            <Link to="/app" onClick={() => setMobileOpen(false)}>
-              <Button className="w-full rounded-full">Get started</Button>
-            </Link>
+            {user ? (
+              <>
+                <Link to="/app" onClick={() => setMobileOpen(false)}>
+                  <Button variant="ghost" className="w-full justify-start">Dashboard</Button>
+                </Link>
+                <Button variant="ghost" className="w-full justify-start" onClick={() => { signOut(); setMobileOpen(false); }}>
+                  <LogOut size={16} className="mr-2" /> Sign out
+                </Button>
+              </>
+            ) : (
+              <>
+                <Link to="/auth" onClick={() => setMobileOpen(false)}>
+                  <Button variant="ghost" className="w-full justify-start">Sign in</Button>
+                </Link>
+                <Link to="/auth" onClick={() => setMobileOpen(false)}>
+                  <Button className="w-full rounded-full">Get started</Button>
+                </Link>
+              </>
+            )}
           </div>
         </div>
       )}
