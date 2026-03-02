@@ -1,51 +1,20 @@
 
 
-## Plan: Build the Planner Section
+## Connect Navbar "Modules" Tab to the App Modules Page
 
-Create a full study planner with a calendar view, the ability to add/edit/delete study sessions, and persistence via a database table.
+Currently, the landing page navbar tabs ("Platform", "Modules", "Insights") only toggle an active state visually but don't navigate anywhere. The goal is to make the "Modules" tab navigate to `/app/modules`.
 
-### 1. Database: `study_sessions` table
+### Changes
 
-Create a new table to store planned study sessions per user:
+**File: `src/components/landing/Navbar.tsx`**
 
-| Column | Type | Notes |
-|--------|------|-------|
-| id | uuid (PK) | default `gen_random_uuid()` |
-| user_id | uuid | NOT NULL |
-| topic_id | text | nullable — links to study data topic |
-| title | text | NOT NULL |
-| description | text | default '' |
-| date | date | NOT NULL |
-| start_time | time | nullable |
-| duration_minutes | integer | default 60 |
-| completed | boolean | default false |
-| created_at | timestamptz | default now() |
-
-RLS policies: users can only SELECT, INSERT, UPDATE, DELETE their own rows (`auth.uid() = user_id`).
-
-### 2. New Component: `src/components/app/PlannerContent.tsx`
-
-**Layout** (two-column on desktop, stacked on mobile):
-- **Left**: Calendar widget (using existing `<Calendar />` component) for date picking. Below it, a mini "Upcoming" list showing the next 3–5 sessions.
-- **Right**: Selected day's session list. Each session card shows title, time, duration, topic tag, and a completed checkbox. Empty state when no sessions.
-
-**Add Session**: A dialog/sheet form with fields for title, date (pre-filled from calendar selection), start time, duration, and an optional topic dropdown (populated from `studyData.ts` subjects/topics). Saves to `study_sessions` table.
-
-**Edit/Delete**: Click a session card to open the same dialog pre-filled for editing. Delete button inside the dialog.
-
-**Mark Complete**: Checkbox on each session card toggles `completed` via an update query.
-
-**Data fetching**: Use `@tanstack/react-query` with the Supabase client to fetch sessions for the selected month, and mutations for create/update/delete.
-
-### 3. Wire into AppDashboard
-
-**Edit: `src/pages/AppDashboard.tsx`**
-- Import `PlannerContent` and add a route condition: `if (location.pathname === "/app/planner") return <PlannerContent />;`
+1. Make the "Modules" tab a link that navigates to `/app/modules` using React Router's `Link` component (or `useNavigate`).
+2. Keep "Platform" and "Insights" as scroll/tab toggles on the landing page (existing behavior).
+3. Apply the same change in the mobile drawer -- tapping "Modules" on mobile will also navigate to `/app/modules`.
 
 ### Technical Details
 
-- Calendar `pointer-events-auto` class will be added per shadcn datepicker guidelines.
-- Sessions fetched by month range to keep queries efficient.
-- Optimistic updates on complete toggle for snappy UX.
-- Toast notifications on create/update/delete success/failure.
+- In the desktop `nav` loop and the mobile drawer loop, add a condition: if `tab === "Modules"`, render a `<Link to="/app/modules">` instead of a plain `<button>`.
+- The styling classes remain the same so visual consistency is preserved.
+- Close the mobile drawer on navigation (already handled by `setMobileOpen(false)`).
 
