@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom";
 import { AppSidebar, AppTopbar } from "@/components/app/AppShell";
 import { DashboardContent } from "@/components/app/DashboardContent";
 import { ModulesContent } from "@/components/app/ModulesContent";
+import { SettingsContent } from "@/components/app/SettingsContent";
 import { ProtectedRoute } from "@/components/app/ProtectedRoute";
 
 const AppDashboard = () => {
@@ -11,6 +12,7 @@ const AppDashboard = () => {
 
   const renderContent = () => {
     if (location.pathname === "/app/modules") return <ModulesContent />;
+    if (location.pathname === "/app/settings") return <SettingsContent />;
     return <DashboardContent />;
   };
 
