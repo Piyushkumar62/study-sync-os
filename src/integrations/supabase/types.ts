@@ -14,6 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
+      study_sessions: {
+        Row: {
+          completed: boolean
+          created_at: string
+          date: string
+          description: string
+          duration_minutes: number
+          id: string
+          start_time: string | null
+          title: string
+          topic_id: string | null
+          user_id: string
+        }
+        Insert: {
+          completed?: boolean
+          created_at?: string
+          date: string
+          description?: string
+          duration_minutes?: number
+          id?: string
+          start_time?: string | null
+          title: string
+          topic_id?: string | null
+          user_id: string
+        }
+        Update: {
+          completed?: boolean
+          created_at?: string
+          date?: string
+          description?: string
+          duration_minutes?: number
+          id?: string
+          start_time?: string | null
+          title?: string
+          topic_id?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       study_topics: {
         Row: {
           created_at: string
