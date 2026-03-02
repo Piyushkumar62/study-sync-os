@@ -13,6 +13,7 @@ const AppDashboard = () => {
 
   const renderContent = () => {
     if (location.pathname === "/app/modules") return <ModulesContent />;
+    if (location.pathname === "/app/planner") return <PlannerContent />;
     if (location.pathname === "/app/settings") return <SettingsContent />;
     return <DashboardContent />;
   };
