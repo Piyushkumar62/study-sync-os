@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -13,14 +15,30 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { User, Palette, Bell, Shield, LogOut, Save, Trash2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
 export function SettingsContent() {
   const { user, signOut } = useAuth();
-  const [displayName, setDisplayName] = useState(user?.user_metadata?.display_name || "");
+  const navigate = useNavigate();
+  const [displayName, setDisplayName] = useState("");
+  const [bio, setBio] = useState("");
   const [saving, setSaving] = useState(false);
+  const [loadingProfile, setLoadingProfile] = useState(true);
+  const [deleteConfirm, setDeleteConfirm] = useState("");
+  const [deleting, setDeleting] = useState(false);
 
   // Appearance
   const [theme, setTheme] = useState<string>(() => {
@@ -36,6 +54,24 @@ export function SettingsContent() {
   const [weeklyDigest, setWeeklyDigest] = useState(false);
   const [progressAlerts, setProgressAlerts] = useState(true);
 
+  // Fetch profile
+  useEffect(() => {
+    if (!user) return;
+    const fetchProfile = async () => {
+      const { data } = await supabase
+        .from("profiles")
+        .select("display_name, bio")
+        .eq("id", user.id)
+        .single();
+      if (data) {
+        setDisplayName(data.display_name || "");
+        setBio(data.bio || "");
+      }
+      setLoadingProfile(false);
+    };
+    fetchProfile();
+  }, [user]);
+
   const handleThemeChange = (value: string) => {
     setTheme(value);
     if (value === "dark") {
@@ -47,12 +83,16 @@ export function SettingsContent() {
   };
 
   const handleSaveProfile = async () => {
+    if (!user) return;
     setSaving(true);
     try {
-      const { error } = await supabase.auth.updateUser({
-        data: { display_name: displayName },
-      });
+      const { error } = await supabase
+        .from("profiles")
+        .update({ display_name: displayName, bio })
+        .eq("id", user.id);
       if (error) throw error;
+      // Also update auth metadata for display_name
+      await supabase.auth.updateUser({ data: { display_name: displayName } });
       toast({ title: "Profile saved", description: "Your profile has been updated." });
     } catch (err: any) {
       toast({ title: "Error", description: err.message, variant: "destructive" });
@@ -74,9 +114,24 @@ export function SettingsContent() {
     }
   };
 
-  const handleSignOut = async () => {
-    await signOut();
+  const handleDeleteAccount = async () => {
+    if (deleteConfirm !== "DELETE") return;
+    setDeleting(true);
+    try {
+      const { error } = await supabase.rpc("delete_user_account");
+      if (error) throw error;
+      await signOut();
+      navigate("/");
+    } catch (err: any) {
+      toast({ title: "Error", description: err.message, variant: "destructive" });
+      setDeleting(false);
+    }
   };
+
+  const initials = (() => {
+    if (displayName) return displayName.split(" ").map(w => w[0]).join("").toUpperCase().slice(0, 2);
+    return (user?.email || "").slice(0, 2).toUpperCase();
+  })();
 
   return (
     <div className="max-w-3xl space-y-6">
@@ -104,17 +159,20 @@ export function SettingsContent() {
         {/* Profile */}
         <TabsContent value="profile" className="mt-6 space-y-6">
           <div className="rounded-lg border border-border bg-card p-6 space-y-5">
-            <h2 className="text-lg font-semibold text-foreground">Profile Information</h2>
+            <div className="flex items-center gap-4">
+              <div className="h-16 w-16 rounded-full bg-primary flex items-center justify-center text-xl font-bold text-primary-foreground">
+                {loadingProfile ? "…" : initials}
+              </div>
+              <div>
+                <h2 className="text-lg font-semibold text-foreground">Profile Information</h2>
+                <p className="text-xs text-muted-foreground">{user?.email}</p>
+              </div>
+            </div>
             <Separator />
             <div className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  value={user?.email || ""}
-                  disabled
-                  className="bg-secondary text-muted-foreground"
-                />
+                <Input id="email" value={user?.email || ""} disabled className="bg-secondary text-muted-foreground" />
                 <p className="text-xs text-muted-foreground">Email cannot be changed here.</p>
               </div>
               <div className="space-y-2">
@@ -124,6 +182,16 @@ export function SettingsContent() {
                   value={displayName}
                   onChange={(e) => setDisplayName(e.target.value)}
                   placeholder="Your display name"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="bio">Bio</Label>
+                <Textarea
+                  id="bio"
+                  value={bio}
+                  onChange={(e) => setBio(e.target.value)}
+                  placeholder="Tell us about yourself..."
+                  rows={3}
                 />
               </div>
               <Button onClick={handleSaveProfile} disabled={saving} className="gap-2">
@@ -151,9 +219,7 @@ export function SettingsContent() {
                     <SelectItem value="dark">Dark</SelectItem>
                   </SelectContent>
                 </Select>
-                <p className="text-xs text-muted-foreground">
-                  Choose between light and dark mode.
-                </p>
+                <p className="text-xs text-muted-foreground">Choose between light and dark mode.</p>
               </div>
             </div>
           </div>
@@ -223,7 +289,7 @@ export function SettingsContent() {
               <p className="text-sm text-muted-foreground">
                 Sign out of your current session on this device.
               </p>
-              <Button variant="destructive" onClick={handleSignOut} className="gap-2">
+              <Button variant="destructive" onClick={() => signOut()} className="gap-2">
                 <LogOut size={14} />
                 Sign Out
               </Button>
@@ -237,11 +303,41 @@ export function SettingsContent() {
               <p className="text-sm text-muted-foreground">
                 Permanently delete your account and all associated data. This action cannot be undone.
               </p>
-              <Button variant="destructive" className="gap-2" disabled>
-                <Trash2 size={14} />
-                Delete Account
-              </Button>
-              <p className="text-xs text-muted-foreground">Account deletion is coming soon.</p>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button variant="destructive" className="gap-2">
+                    <Trash2 size={14} />
+                    Delete Account
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      This will permanently delete your account, study sessions, progress, and all associated data. This action cannot be undone.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <div className="space-y-2 py-2">
+                    <Label htmlFor="deleteConfirm">Type <span className="font-mono font-bold">DELETE</span> to confirm</Label>
+                    <Input
+                      id="deleteConfirm"
+                      value={deleteConfirm}
+                      onChange={(e) => setDeleteConfirm(e.target.value)}
+                      placeholder="DELETE"
+                    />
+                  </div>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel onClick={() => setDeleteConfirm("")}>Cancel</AlertDialogCancel>
+                    <Button
+                      variant="destructive"
+                      disabled={deleteConfirm !== "DELETE" || deleting}
+                      onClick={handleDeleteAccount}
+                    >
+                      {deleting ? "Deleting..." : "Delete My Account"}
+                    </Button>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             </div>
           </div>
         </TabsContent>
