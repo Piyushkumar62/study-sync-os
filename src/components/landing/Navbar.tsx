@@ -79,18 +79,11 @@ export function Navbar() {
               </Button>
             </>
           ) : (
-            <>
-              <Link to="/auth">
-                <Button variant="ghost" size="sm" className="text-muted-foreground">
-                  Sign in
-                </Button>
-              </Link>
-              <Link to="/auth">
-                <Button size="sm" className="rounded-full px-5">
-                  Get started
-                </Button>
-              </Link>
-            </>
+            <Link to="/auth">
+              <Button size="sm" className="rounded-full px-5">
+                Get started
+              </Button>
+            </Link>
           )}
         </div>
 
@@ -145,14 +138,9 @@ export function Navbar() {
                 </Button>
               </>
             ) : (
-              <>
-                <Link to="/auth" onClick={() => setMobileOpen(false)}>
-                  <Button variant="ghost" className="w-full justify-start">Sign in</Button>
-                </Link>
-                <Link to="/auth" onClick={() => setMobileOpen(false)}>
-                  <Button className="w-full rounded-full">Get started</Button>
-                </Link>
-              </>
+              <Link to="/auth" onClick={() => setMobileOpen(false)}>
+                <Button className="w-full rounded-full">Get started</Button>
+              </Link>
             )}
           </div>
         </div>
