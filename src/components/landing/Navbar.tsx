@@ -26,35 +26,37 @@ export function Navbar() {
         </Link>
 
         {/* Center tabs – desktop */}
-        <nav className="hidden md:flex items-center gap-1 rounded-full bg-secondary/80 p-1">
-          {tabs.map((tab) =>
-            tab === "Modules" ? (
-              <Link
-                key={tab}
-                to={modulesHref}
-                className={`rounded-full px-4 py-1.5 text-sm font-medium transition-all ${
-                  active === tab
-                    ? "bg-card text-foreground shadow-sm"
-                    : "text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                {tab}
-              </Link>
-            ) : (
-              <button
-                key={tab}
-                onClick={() => setActive(tab)}
-                className={`rounded-full px-4 py-1.5 text-sm font-medium transition-all ${
-                  active === tab
-                    ? "bg-card text-foreground shadow-sm"
-                    : "text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                {tab}
-              </button>
-            )
-          )}
-        </nav>
+        {user && (
+          <nav className="hidden md:flex items-center gap-1 rounded-full bg-secondary/80 p-1">
+            {tabs.map((tab) =>
+              tab === "Modules" ? (
+                <Link
+                  key={tab}
+                  to={modulesHref}
+                  className={`rounded-full px-4 py-1.5 text-sm font-medium transition-all ${
+                    active === tab
+                      ? "bg-card text-foreground shadow-sm"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  {tab}
+                </Link>
+              ) : (
+                <button
+                  key={tab}
+                  onClick={() => setActive(tab)}
+                  className={`rounded-full px-4 py-1.5 text-sm font-medium transition-all ${
+                    active === tab
+                      ? "bg-card text-foreground shadow-sm"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  {tab}
+                </button>
+              )
+            )}
+          </nav>
+        )}
 
         {/* Right actions – desktop */}
         <div className="hidden md:flex items-center gap-3">
@@ -105,7 +107,7 @@ export function Navbar() {
       {/* Mobile drawer */}
       {mobileOpen && (
         <div className="md:hidden border-t border-border bg-card px-5 py-4 space-y-3">
-          {tabs.map((tab) =>
+          {user && tabs.map((tab) =>
             tab === "Modules" ? (
               <Link
                 key={tab}
