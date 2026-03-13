@@ -181,7 +181,7 @@ export function SettingsContent() {
                   id="displayName"
                   value={displayName}
                   onChange={(e) => setDisplayName(e.target.value)}
-                  placeholder="Your display name"
+                  placeholder="e.g. Alex Johnson"
                 />
               </div>
               <div className="space-y-2">
