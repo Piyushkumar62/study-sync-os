@@ -190,7 +190,7 @@ export function SettingsContent() {
                   id="bio"
                   value={bio}
                   onChange={(e) => setBio(e.target.value)}
-                  placeholder="Tell us about yourself..."
+                  placeholder="e.g. Computer Science student at MIT, focused on algorithms and distributed systems."
                   rows={3}
                 />
               </div>
