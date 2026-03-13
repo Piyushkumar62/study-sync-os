@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard, BookOpen, CalendarDays, BarChart3,
-  Lightbulb, Settings, Search, Bell, ChevronLeft, Menu, LogOut, Check
+  Lightbulb, Settings, Search, Bell, ChevronLeft, Menu, LogOut, Check, ClipboardCheck
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
