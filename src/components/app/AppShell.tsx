@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard, BookOpen, CalendarDays, BarChart3,
-  Lightbulb, Settings, Search, Bell, ChevronLeft, Menu, LogOut, Check
+  Lightbulb, Settings, Search, Bell, ChevronLeft, Menu, LogOut, Check, ClipboardCheck
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -13,6 +13,7 @@ const navItems = [
   { icon: LayoutDashboard, label: "Overview", path: "/app" },
   { icon: BookOpen, label: "Modules", path: "/app/modules" },
   { icon: CalendarDays, label: "Planner", path: "/app/planner" },
+  { icon: ClipboardCheck, label: "Tests", path: "/app/tests" },
   { icon: BarChart3, label: "Analytics", path: "/app/analytics" },
   { icon: Lightbulb, label: "Recommendations", path: "/app/recommendations" },
   { icon: Settings, label: "Settings", path: "/app/settings" },
